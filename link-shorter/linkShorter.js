@@ -16,7 +16,7 @@
  * links.data (id BIGINT PRIMARY KEY AUTOINCREMENT, query TEXT, url TEXT);
 */
 
-class LinkShorter {
+module.exports = class LinkShorter {
 	#currentDataBAseConnection;
 	#currentCacheConnection;
 
@@ -30,8 +30,4 @@ class LinkShorter {
 			this.#currentCacheConnection = ConnectionManager.getCacheConnection();
 		}
 	}
-}
-
-module.exports = {
-	LinkShorter: LinkShorter
 }

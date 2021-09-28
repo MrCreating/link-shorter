@@ -1,0 +1,11 @@
+{
+	"server": {
+		"domain": null,
+		"port": 80
+	},
+	"database": {
+		"host": null,
+		"user": null,
+		"password": null
+	}
+}

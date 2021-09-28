@@ -13,7 +13,9 @@
   "author": "MrCreating",
   "license": "MIT",
   "dependencies": {
+    "fs": "0.0.1-security",
     "memcached": "^2.2.2",
+    "multiparty": "^4.2.2",
     "mysql": "^2.18.1"
   }
 }

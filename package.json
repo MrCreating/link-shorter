@@ -1,0 +1,19 @@
+{
+  "name": "js-link-shorter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "link",
+    "short"
+  ],
+  "author": "MrCreating",
+  "license": "MIT",
+  "dependencies": {
+    "memcached": "^2.2.2",
+    "mysql": "^2.18.1"
+  }
+}

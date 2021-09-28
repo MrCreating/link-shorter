@@ -1,0 +1,1 @@
+const LinkShorter = require('./link-shorter/linkShorter.js');

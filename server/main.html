@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
+	<meta name="theme-color" content="#42A5F5">
+	<title>Сокращение ссылок</title>
+
+	<link href="https://dev.yunnet.ru/css/default-components.css" type="text/css" rel="stylesheet" media="screen,projection">
+	<script type="text/javascript" src="https://dev.yunnet.ru/js/default-components.js"></script>
+	<style>
+		body {
+			background-color: #eeeeee !important;
+		}
+	</style>
+	<script type="text/javascript">
+		window.addEventListener('DOMContentLoaded', function () {
+			unt.AutoInit();
+
+			let inputLink = document.getElementById('link_for_work');
+			let resultedLink = document.getElementById('resulted_link');
+			let saveButton = document.getElementById('process_url');
+
+			if (inputLink && resultedLink && saveButton) {
+				saveButton.addEventListener('click', function (result) {
+					if (inputLink.value.isEmpty() || !inputLink.value.isURL())
+						return inputLink.classList.add('wrong');
+					else
+						inputLink.classList.remove('wrong');
+
+					if (resultedLink.value.isEmpty())
+						resultedLink.value = '';
+
+					if (!resultedLink.value.isEmpty() && resultedLink.value.length < 2)
+						return resultedLink.classList.add('wrong');
+					else
+						resultedLink.classList.remove('wrong');
+
+					if (resultedLink.value.isURL())
+						resultedLink.value = '';
+
+					unt.updateTextFields();
+
+					inputLink.disabled = true;
+					resultedLink.disabled = true;
+					saveButton.classList.add('disabled');
+					saveButton.innerText = 'В процессе...';
+
+					let x = new XMLHttpRequest();
+					x.open('POST', '/');
+
+					let data = new FormData();
+					data.append('action', 'createLink');
+					data.append('url', inputLink.value);
+					data.append('screen_name', resultedLink.value);
+
+					x.onreadystatechange = function () {
+						if (x.readyState !== 4) return;
+
+						let response = x.responseText;
+
+						inputLink.disabled = false;
+						resultedLink.disabled = false;
+						saveButton.classList.remove('disabled');
+						saveButton.innerText = 'Сократить';
+						try {
+							response = JSON.parse(x.responseText);
+
+							if (response.error) {
+								let code = response.error.code;
+
+								if (code === 1)
+									return unt.toast({html: 'Ссылка уже занята :('});
+								if (code === 2)
+									return unt.toast({html: 'Итоговая ссылка слишком длинная. Не более 16-ти символов'})
+								if (code === 3)
+									return unt.toast({html: 'Введённая ссылка некорректна.'})
+								if (code === 4)
+									return unt.toast({html: 'Итоговая ссылка некорректна. Убедитесь, что она содержит только буквы и цифры.'})
+
+								return unt.toast({html: 'Неизвестная ошибка...'});
+							}
+
+							resultedLink.value = response.result.url;
+							unt.AutoInit();
+							unt.updateTextFields()
+							
+							return unt.toast({html: '<div><div>Ссылка появилась в поле итоговой ссылки.</div><br><a style="color: white;" href="'+response.result.url+'"><b>ПЕРЕЙТИ</b></a></dov>'});
+						} catch (e) {
+							return unt.toast({html: 'Ошибка при разборе ответа с сервера'});
+						}
+					}
+
+					x.send(data);
+				});
+			}
+		})
+	</script>
+</head>
+<body>
+	<div class="important-window" style="display: flex; opacity: 1; height: 100%;">
+		<div style="width: 100%; height: 100%;">
+			<div class="card" style="top: 45%; left: 50%; margin-right: -50%; transform: translate(-50%, -50%); padding: 5px; max-width: 50%">
+				<div>
+					<div style="padding: 20px">
+						Введите в поле ссылку для сокращения, например: <a href="https://yunnet.ru/" target="_blank">https://yunnet.ru/</a>, а если хотите сделать сокращенную ссылку красивой - то можете заполнить и поле для итоговой ссылки, однако это необязательно.
+					</div>
+					<div style="padding: 10px;">
+						<div class="input-field" style="margin: 14px;">
+							<input type="text" id="link_for_work">
+							<label for="link_for_work">Ссылка для сокращения</label>
+						</div>
+						<div class="input-field" style="margin: 14px;">
+							<input type="text" id="resulted_link">
+							<label for="resulted_link">Итоговая ссылка (необязатель заполнять)</label>
+						</div>
+					</div>
+					<div style="width: 100%; text-align: end; padding: 0px 9px 9px 0px;">
+						<a class="btn btn-flat waves-effect" id="process_url">Сократить</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -24,14 +24,22 @@ module.exports = class LinkShorter {
 		return string.split('').sort(function() { return 0.5 - Math.random() }).join('').substr(0, Number(stringLenth) || 8);
 	}
 
-	constructor (databaseConnection = null, cacheConnection = null) {
+	constructor (config = null, databaseConnection = null, cacheConnection = null) {
 		const ConnectionManager = require('./connectionManager.js');
 
 		if (!databaseConnection) {
-			this.#currentDataBAseConnection = ConnectionManager.getDBConnection('127.0.0.1', 'root', 'iA22021981_', 'links');
+			this.#currentDataBAseConnection = ConnectionManager.getDBConnection(config.database.host, config.database.user, config.database.password, 'links');
 		}
 		if (!cacheConnection) {
 			this.#currentCacheConnection = ConnectionManager.getCacheConnection();
+		}
+
+		if (databaseConnection) {
+			this.#currentCacheConnection = databaseConnection;
+		}
+		
+		if (cacheConnection) {
+			this.#currentCacheConnection = cacheConnection;
 		}
 	}
 

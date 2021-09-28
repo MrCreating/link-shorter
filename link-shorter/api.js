@@ -16,3 +16,7 @@ function createURL (shorterSession, currentDomain, url, readableURL = null) {
 		})
 	});
 }
+
+module.exports = {
+	createURL: createURL
+}

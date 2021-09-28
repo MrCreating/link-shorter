@@ -7,5 +7,9 @@
 		"host": null,
 		"user": null,
 		"password": null
+	},
+	"https": {
+		"ssl_cert": null,
+		"ssl_key": null
 	}
 }

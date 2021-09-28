@@ -21,6 +21,14 @@ module.exports = class ConnectionManager {
 			password: password,
 			database: database
 		});
+		connection.on('error', function (error) {
+			if (error.errono === 1045) throw new Error('Access to DB denied');
+
+			return connection.connect();
+		});
+		connection.on('timeout', function () {
+			return connection.connect();
+		})
 
 		connection.connect();
 		return connection;
